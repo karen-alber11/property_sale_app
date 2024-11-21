@@ -21,19 +21,30 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     return openDatabase(
       join(dbPath, 'favorites.db'),
+      version: 2,  // Incremented version to trigger schema upgrade
       onCreate: (db, version) {
-        return db.execute('''
+        // Initial database creation with the new schema
+        return db.execute(''' 
           CREATE TABLE favorites(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             type TEXT,
-            title TEXT UNIQUE,
+            title TEXT,
             description TEXT,
-            link TEXT,
-            datePublished TEXT
+            link TEXT UNIQUE,
+            datePublished TEXT,
+            dateRelative TEXT  // Adding dateRelative column
           )
         ''');
       },
-      version: 1,
+      // onUpgrade: (db, oldVersion, newVersion) {
+      //   // Handling database upgrade
+      //   if (oldVersion < 2) {
+      //     // Adding the dateRelative column if it's missing
+      //     db.execute('''
+      //       ALTER TABLE favorites ADD COLUMN dateRelative TEXT;
+      //     ''');
+      //   }
+      // },
     );
   }
 

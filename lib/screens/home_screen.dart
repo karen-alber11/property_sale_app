@@ -22,8 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<FavoritesCubit, List<Property>>(
       builder: (context, favorites) {
         final filteredProperties = _selectedTab == "Pinned"
-            ? widget.properties.where((p) => p.relativeDate == "Pinned today").toList()
-            : widget.properties.where((p) => p.relativeDate != "Pinned today").toList();
+            ? widget.properties.where((p) => p.dateRelative == "Pinned today" && p.dateRelative != null).toList()
+            : widget.properties.where((p) => p.dateRelative != "Pinned today" && p.dateRelative != null).toList();
+
 
         return Scaffold(
           appBar: AppBar(

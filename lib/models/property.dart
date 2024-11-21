@@ -4,6 +4,7 @@ class Property {
   final String description;
   final String link;
   final String datePublished;
+  final String dateRelative;
 
   Property({
     required this.type,
@@ -11,34 +12,22 @@ class Property {
     required this.description,
     required this.link,
     required this.datePublished,
+    required this.dateRelative,
   });
 
-  // Add a method to calculate the relative date
-  String get relativeDate {
-    final publishedDate = DateTime.parse(datePublished);
-    final today = DateTime.now();
-
-    if (publishedDate.year == today.year &&
-        publishedDate.month == today.month &&
-        publishedDate.day == today.day) {
-      return "Pinned today";
-    } else {
-      return "Not pinned today";
-    }
-  }
-
-  // Add a fromJson factory for API parsing
+  // Factory constructor for API parsing
   factory Property.fromJson(Map<String, dynamic> json) {
     return Property(
-      type: json['type'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      link: json['link'] as String,
-      datePublished: json['datePublished'] as String,
+      type: json['type'] as String? ?? 'Unknown',
+      title: json['title'] as String? ?? 'Untitled',
+      description: json['description'] as String? ?? 'No description',
+      link: json['link'] as String? ?? 'No link',
+      datePublished: json['datePublished'] as String? ?? '',
+      dateRelative: json['dateRelative'] as String? ?? 'No dateRelative',
     );
   }
 
-  // Add toJson for potential serialization if needed
+  // Convert to JSON for serialization
   Map<String, dynamic> toJson() {
     return {
       'type': type,
@@ -46,21 +35,23 @@ class Property {
       'description': description,
       'link': link,
       'datePublished': datePublished,
+      'dateRelative': dateRelative,
     };
   }
 
-  // Add a fromMap method for database integration
+  // Factory constructor for database integration
   factory Property.fromMap(Map<String, dynamic> map) {
     return Property(
-      type: map['type'] as String,
-      title: map['title'] as String,
-      description: map['description'] as String,
-      link: map['link'] as String,
-      datePublished: map['datePublished'] as String,
+      type: map['type'] as String? ?? 'Unknown',
+      title: map['title'] as String? ?? 'Untitled',
+      description: map['description'] as String? ?? 'No description',
+      link: map['link'] as String? ?? 'No link',
+      datePublished: map['datePublished'] as String? ?? '',
+      dateRelative: map['dateRelative'] as String? ?? 'No dateRelative',
     );
   }
 
-  // Add a toMap method for database integration
+  // Convert to Map for database integration
   Map<String, dynamic> toMap() {
     return {
       'type': type,
@@ -68,6 +59,15 @@ class Property {
       'description': description,
       'link': link,
       'datePublished': datePublished,
+      'dateRelative': dateRelative,
     };
+  }
+
+  // Parse a List<Map<String, dynamic>> into List<Property>
+  static List<Property> fromList(List<Map<String, dynamic>> list) {
+    return list
+        .where((map) => map is Map<String, dynamic>)
+        .map((map) => Property.fromMap(map))
+        .toList();
   }
 }
